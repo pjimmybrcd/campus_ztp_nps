@@ -1,0 +1,29 @@
+---
+name: "rpvlan_process_new_mac_auth_failure_chain"
+description: "Campus ZTP Private VLAN new failed mac-auth Workflow"
+
+runner_type: "action-chain"
+
+entry_point: "chains/rpvlan_process_new_mac_auth_failure_chain.yaml"
+
+enabled: true
+
+parameters:
+  timestamp:
+    type: "string"
+    required: true
+  switch_name:
+    type: "string"
+    required: true
+  ip:
+    type: "string"
+    required: true
+  ap_name:
+    type: "string"
+    required: true
+  mac:
+    type: "string"
+    required: true
+  port:
+    type: "string"
+    required: true

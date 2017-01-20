@@ -1,0 +1,59 @@
+---
+  class_name: "LoggingWatchSensor"
+  entry_point: "logging_sensor.py"
+  description: "Sensor which monitors syslog for new lines"
+  trigger_types:
+    -
+      name: "rpvlan_port_down"
+      description: "Trigger which indicates a port down has been detected"
+      payload_schema:
+        type: "object"
+        properties:
+          timestamp:
+            type: "string"
+          switch_name:
+            type: "string"
+          ip:
+            type: "string"
+          ap_name:
+            type: "string"
+          port:
+            type: "string"
+    -
+      name: "rpvlan_new_mac_auth_failure_do_not_allow"
+      description: "Trigger which indicates a new mac failure has be detected and should not be allowed."
+      payload_schema:
+        type: "object"
+        properties:
+          timestamp:
+            type: "string"
+          switch_name:
+            type: "string"
+          ip:
+            type: "string"
+          ap_name:
+            type: "string"
+          mac:
+            type: "string"
+          port:
+            type: "string"
+    -
+      name: "rpvlan_new_mac_auth_failure"
+      description: "Trigger which indicates a new mac failure has be detected"
+      payload_schema:
+        type: "object"
+        properties:
+          timestamp:
+            type: "string"
+          switch_name:
+            type: "string"
+          ip:
+            type: "string"
+          ap_name:
+            type: "string"
+          mac:
+            type: "string"
+          base_mac:
+            type: "string"
+          port:
+            type: "string"

@@ -1,0 +1,17 @@
+---
+name: "rpvlan_new_mac_auth_failure"
+pack: "campus_ztp"
+enabled: true
+description: "notification that a device has failed to mac authenticate"
+trigger:
+  type: "campus_ztp.rpvlan_new_mac_auth_failure"
+action:
+  ref: "campus_ztp.rpvlan_process_new_mac_auth_failure_chain"
+  parameters:
+    timestamp: "{{trigger.timestamp}}"
+    switch_name: "{{trigger.switch_name}}"
+    ip: "{{trigger.ip}}"
+    ap_name: "{{trigger.ap_name}}"
+    mac: "{{trigger.mac}}"
+    base_mac: "{{trigger.base_mac}}"
+    port: "{{trigger.port}}"

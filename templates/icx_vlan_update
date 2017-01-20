@@ -1,0 +1,37 @@
+{#################################################################
+    This are the commands to execute the configuration
+##################################################################}
+{% if commit=='true' %}
+!
+authentication
+  no dot1x enable ethernet {{port}}
+  no mac-authentication enable ethernet {{port}}
+ 
+vlan 233
+  tagged ethernet {{port}}
+
+interface ethernet {{port}}
+  dual-mode 233
+  port-name {{ap_name}}
+!
+{% endif %}
+{#################################################################
+    This are the commands to execute to reverse the configuration above
+##################################################################}
+{% if not commit=='true' %}
+!
+authentication
+  dot1x enable ethernet {{port}}
+  mac-authentication enable ethernet {{port}}
+
+interface ethernet {{port}}
+  no dual-mode 233
+  no authentication auth-default-vlan 233
+  dot1x port-control auto
+  no port-name {{ap_name}}
+
+vlan 233
+  no tagged ethernet {{port}}
+!
+{% endif %}
+

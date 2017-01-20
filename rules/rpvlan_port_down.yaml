@@ -1,0 +1,15 @@
+---
+name: "rpvlan_port_down"
+pack: "campus_ztp"
+enabled: true
+description: "notification that a port that's part of RPVlan has gone down"
+trigger:
+  type: "campus_ztp.rpvlan_port_down"
+action:
+  ref: "campus_ztp.rpvlan_process_port_down_chain"
+  parameters:
+    timestamp: "{{trigger.timestamp}}"
+    switch_name: "{{trigger.switch_name}}"
+    ip: "{{trigger.ip}}"
+    ap_name: "{{trigger.ap_name}}"
+    port: "{{trigger.port}}"

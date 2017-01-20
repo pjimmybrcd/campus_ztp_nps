@@ -1,0 +1,16 @@
+---
+name: "rpvlan_new_mac_auth_failure_do_not_allow"
+pack: "campus_ztp"
+enabled: true
+description: "notification that a device has failed to mac authenticate and should not be allowed to authenticate"
+trigger:
+  type: "campus_ztp.rpvlan_new_mac_auth_failure_do_not_allow"
+action:
+  ref: "campus_ztp.rpvlan_process_new_mac_auth_failure_do_not_allow_chain"
+  parameters:
+    timestamp: "{{trigger.timestamp}}"
+    switch_name: "{{trigger.switch_name}}"
+    ip: "{{trigger.ip}}"
+    ap_name: "{{trigger.ap_name}}"
+    mac: "{{trigger.mac}}"
+    port: "{{trigger.port}}"

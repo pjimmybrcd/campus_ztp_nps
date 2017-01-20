@@ -1,0 +1,12 @@
+---
+  chain:
+    -
+      name: "rpvlan_update_mac_auth_failure_do_not_allow_database"
+      ref: "campus_ztp.rpvlan_update_mac_auth_failure_do_not_allow_database"
+      parameters:
+        timestamp: "{{timestamp}}"
+        switch_name: "{{switch_name}}"
+        ip: "{{ip}}"
+        ap_name: "{{ap_name}}"
+        mac: "{{mac}}"
+        port: "{{port}}"

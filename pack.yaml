@@ -1,0 +1,8 @@
+### Place information about your pack version here.
+---
+name: campus_ztp
+description: Campus ZTP for edge access deployments
+version: 0.0.2
+author: Tim Braly & Jimmy Patel
+email: tbraly@brocade.com
+

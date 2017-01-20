@@ -1,0 +1,13 @@
+{#### This are the commands to execute the configuration #####}
+{% if commit=='true' %}
+ap {{base_mac}}
+name {{ap_name}}
+end
+{% endif %}
+{#### This are the commands to execute to reverse the configuration above ####}
+{% if not commit=='true' %}
+ap {{base_mac}}
+no name {{ap_name}}
+end
+{% endif %}
+

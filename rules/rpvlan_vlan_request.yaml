@@ -1,0 +1,16 @@
+---
+name: "rpvlan_vlan_request"
+pack: "campus_ztp"
+enabled: true
+description: "notification of a request for private vlan"
+trigger:
+  type: "core.st2.webhook"
+  parameters:
+    url: "rpvlan_vlan_request"
+
+action:
+    ref: "campus_ztp.rpvlan_process_vlan_request_chain"
+    parameters:
+      vlan_id: "{{trigger.body.payload.vlan_id}}"
+      ip: "{{trigger.body.payload.ip}}"
+      mac: "{{trigger.body.payload.mac}}"

@@ -1,0 +1,24 @@
+---
+  chain:
+    -
+      name: "rpvlan_get_port_from_database"
+      ref: "campus_ztp.rpvlan_get_port_from_database"
+      parameters:
+        mac: "{{mac}}"
+      on-success: "send_cli_template"
+    -
+      name: "send_cli_template"
+      ref: "campus_ztp.send_cli_template"
+      parameters:
+        device: "{{rpvlan_get_port_from_database.stdout}}"
+        template: "rpvlan_private_vlan"
+        variables: "{\"commit\":\"true\",\"vlan\":\"{{vlan_id}}\",\"port\":\"{{rpvlan_get_port_from_database.result}}\"}"
+      on-success: "rpvlan_update_port_status_in_database"
+    -
+      name: "rpvlan_update_port_status_in_database"
+      ref: "campus_ztp.rpvlan_update_port_status_in_database"
+      parameters:
+        device: "{{rpvlan_get_port_from_database.stdout}}"
+        vlan: "{{vlan_id}}"
+        port: "{{rpvlan_get_port_from_database.result}}"
+        action: "add"

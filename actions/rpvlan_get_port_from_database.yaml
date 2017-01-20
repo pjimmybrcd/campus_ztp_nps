@@ -1,0 +1,12 @@
+---
+name: "rpvlan_get_port_from_database"
+runner_type: "run-python"
+description: "returns a json record of the device and port for the given mac"
+enabled: true
+entry_point: "rpvlan_get_port_from_database.py"
+parameters:
+  mac:
+    type: "string"
+    description: "mac address"
+    required: true
+

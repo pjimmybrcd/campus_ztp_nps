@@ -1,0 +1,28 @@
+---
+  chain:
+    -
+      name: "send_cli_template"
+      ref: "campus_ztp.send_cli_template"
+      parameters:
+        device: "{{ip}}"
+        template: "icx_vlan_update"
+        variables: "{\"commit\":\"true\",\"port\":\"{{port}}\",\"ap_name\":\"{{ap_name}}\"}"
+      on-failure: "ruckus_controller_send_cli_template"
+    -
+      name: "ruckus_controller_send_cli_template"
+      ref: "campus_ztp.ruckus_controller_send_cli_template"
+      parameters:
+        device: "171.20.40.127"
+        template: "ruckus_controller_update"
+        variables: "{\"commit\":\"true\",\"base_mac\":\"{{base_mac}}\",\"ap_name\":\"{{ap_name}}\"}"
+      on-success: "rpvlan_update_mac_auth_failure_database"
+    -
+      name: "rpvlan_update_mac_auth_failure_database"
+      ref: "campus_ztp.rpvlan_update_mac_auth_failure_database"
+      parameters:
+        timestamp: "{{timestamp}}"
+        switch_name: "{{switch_name}}"
+        ip: "{{ip}}"
+        ap_name: "{{ap_name}}"
+        mac: "{{mac}}"
+        port: "{{port}}"

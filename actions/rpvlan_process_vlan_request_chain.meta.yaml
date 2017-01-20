@@ -1,0 +1,20 @@
+---
+name: "rpvlan_process_vlan_request_chain"
+description: "Campus ZTP Request Private VLAN Workflow"
+
+runner_type: "action-chain"
+
+entry_point: "chains/rpvlan_process_vlan_request_chain.yaml"
+
+enabled: true
+
+parameters:
+  vlan_id:
+    type: "string"
+    required: true
+  ip:
+    type: "string"
+    required: true
+  mac:
+    type: "string"
+    required: true

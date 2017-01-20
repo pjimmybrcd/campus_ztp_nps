@@ -1,0 +1,34 @@
+---
+name: "rpvlan_update_port_status_in_database"
+runner_type: "run-python"
+description: "Either adds or removes the port in the database"
+enabled: true
+entry_point: "rpvlan_update_port_status_in_database.py"
+parameters:
+  timestamp:
+    type: "string"
+    description: "timestamp"
+    required: true
+  switch_name:
+    type: "string"
+    description: "switch name"
+    required: true
+  ip:
+    type: "string"
+    description: "ip addr"
+    required: true
+  ap_name:
+    type: "string"
+    description: "ap_name"
+    required: true
+  port:
+    type: "string"
+    description: "port"
+    required: true
+  action:
+    type: "string"
+    description: "action to take"
+    enum:
+      - "remove"
+      - "add"
+
