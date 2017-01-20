@@ -24,6 +24,9 @@ parameters:
   mac:
     type: "string"
     required: true
+  base_mac:
+    type: "string"
+    required: true
   port:
     type: "string"
     required: true

@@ -7,7 +7,7 @@
         device: "{{ip}}"
         template: "icx_vlan_update"
         variables: "{\"commit\":\"true\",\"port\":\"{{port}}\",\"ap_name\":\"{{ap_name}}\"}"
-      on-failure: "ruckus_controller_send_cli_template"
+      on-success: "ruckus_controller_send_cli_template"
     -
       name: "ruckus_controller_send_cli_template"
       ref: "campus_ztp.ruckus_controller_send_cli_template"
