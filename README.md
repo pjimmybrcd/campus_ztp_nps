@@ -102,7 +102,7 @@ And then add the following items (replacing it with your username and password)
 ## Pack Installation
 ### Via git
 
-		st2 pack install https://github.com/pjimmybrcd/campus_ztp.git
+		st2 pack install https://github.com/pjimmybrcd/campus_ztp_nps.git
 		st2ctl reload
 
 ### Manual Install
@@ -115,7 +115,7 @@ You can also move the entire pack to the /opt/stackstorm/packs/ directory then i
 		st2ctl reload
 		st2 run packs.setup_virtualenv packs=campus_ztp
 
-To view the pack online navigate to https://github.com/pjimmybrcd/campus_ztp
+To view the pack online navigate to https://github.com/pjimmybrcd/campus_ztp_nps
 
 ## Pack Removal
 To remove an installed pack from BWC do the following:
