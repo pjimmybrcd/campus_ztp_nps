@@ -40,6 +40,7 @@ For added security, the network must ensure that if the Ruckus AP is removed or 
 
 When a syslog is matched with the format above, the BWC sensor will check to see if the port on the switch was authorized for a Ruckus AP, meaning that it checks to see if the initial configuration of the port was changed to allow an authorized device to connect. If the configuration was changed, then a template that reverse the changes will be sent to the switch via SSH. Upon successful completion, the information in the database will be updated.
 
+Currently, this port down feature is disabled, but can be reenabled by modifying the sensor.
 
 ## Getting Started
 The following information is a quick start guide on how to get this pack up and running along with BWC.
@@ -65,7 +66,7 @@ The following information is a quick start guide on how to get this pack up and 
 		CREATE database users;
 		USE users;
 		CREATE table failures (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, timestamp VARCHAR(20), switch_name VARCHAR(30), mac VARCHAR(20), ip VARCHAR(20), device VARCHAR(30), port VARCHAR (10));
-		CREATE table authorized (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, timestamp VARCHAR(20), switch_name VARCHAR(30), mac VARCHAR(20), ip VARCHAR(20), device VARCHAR(30), port varchar (10));
+		CREATE table authorized (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, timestamp VARCHAR(20), switch_name VARCHAR(30), mac VARCHAR(20), base_mac VARCHAR(20), ip VARCHAR(20), device VARCHAR(30), port varchar (10));
 
 Add your authorized macs and device names to the authorized table. Writing a script to do this would be the most efficient way to do this. But the command below demonstrates how this can be done in MySQL:
 		
@@ -75,7 +76,7 @@ Add your authorized macs and device names to the authorized table. Writing a scr
 		sudo apt-get install rsyslog
 Configure rsyslog to store logs in: "/var/log/syslog" and the permissions need to allow reading.
 
-## Create a sensorlog fine and configure permissions
+## Create a sensorlog file and configure permissions
 		touch /var/log/sensorlog
 		chmod 666 /var/log/sensorlog
 
@@ -160,6 +161,9 @@ Open the internet browser and navigate to: http://bwc_ip_address
 
 ## Tailing the Sensor messages
 		tail –f /var/log/sensorlog
+
+## Tailing the Sensor Container messages
+		tail –f /var/log/st2/st2sensorcontainer.log
 
 ## List Rows of Authorized table in Database
 		mysql -u <username> -p
