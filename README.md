@@ -127,17 +127,18 @@ The following information may be helpful to troubleshoot any issues that arise.
 
 ## ICX Template Configuration
 The template that is sent to the ICX will need to be updated depending on the configuration changes that are needed. The changes that are currently made by the template include updating the vlan, mac auth, and port name.
+
 1. Modify the template:
-		
+
 		/opt/stacktorm.packs/campus_ztp/templates/icx_vlan_update
 
-2. Test the template in the terminal:
-
-		st2 run campus_ztp.send_cli_template template='icx_vlan_update' device='<ICX_IP_Address>' variables='{"commit":"true","port":"1/1/1","ap_name":"Ruckus_AP_BLD1"}'
-
-3. Reload the pack:
+2. Reload the pack:
 
 		st2ctl reload
+
+3. Test the template in the terminal:
+
+		st2 run campus_ztp.send_cli_template template='icx_vlan_update' device='<ICX_IP_Address>' variables='{"commit":"true","port":"1/1/1","ap_name":"Ruckus_AP_BLD1"}'
 
 # Campus ZTP
 Edit the config.yaml for your environment
