@@ -1,0 +1,28 @@
+---
+name: "update_db_spreadsheet"
+runner_type: "run-python"
+description: "Updates the database given an excel sheet"
+enabled: true
+entry_point: "update_db_spreadsheet.py"
+parameters:
+  filepath:
+    type: "string"
+    description: "filepath of excel (ie: /home/brocade/Desktop/sample.xlsx)"
+    required: true
+  sheetname:
+    type: "string"
+    description: "name of sheet (ie: AP Labels)"
+    required: true
+  ap_name_column_name:
+    type: "string"
+    description: "ap name column name (ie: AP-Name)"
+    required: true
+  mac_plus_three_column_name:
+    type: "string"
+    description: "mac + 3 column name (ie: AP-MAC-Plus-Three)"
+    required: true
+  base_mac_column_name:
+    type: "string"
+    description: "base mac column name (ie: AP-Base-Mac)"
+    required: true
+  
