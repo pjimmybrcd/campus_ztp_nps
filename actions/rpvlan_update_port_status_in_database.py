@@ -18,7 +18,7 @@ class RpvlanUpdateMacAuthFailureDatabaseAction(actions.SessionAction):
      return (True)
 
   def process_add_port(self, timestamp, switch_name, ip, ap_name, port):
-
+        """
         connection = pymysql.connect(
              host=self._db_addr, 
              user=self._db_user,      
@@ -26,10 +26,11 @@ class RpvlanUpdateMacAuthFailureDatabaseAction(actions.SessionAction):
              db=self._db_name)
 
         cursor = connection.cursor()
-        sql = "update authorized values ('%s','%s') where port='%s'" % (ip, port)
+        sql = "update authorized set ip='NULL', port='NULL', switch_name='NULL', timestamp='NULL' where port='%s' and ip='%s'" % (port, ip)
         cursor.execute(sql)
         connection.commit()
         connection.close()
+        """
 
   def process_remove_port(self, timestamp, switch_name, ip, ap_name, port):
         connection = pymysql.connect(
@@ -39,13 +40,10 @@ class RpvlanUpdateMacAuthFailureDatabaseAction(actions.SessionAction):
              db=self._db_name)
         
         cursor = connection.cursor()
-        sql = "update authorized set ip='NULL', port='NULL' where port='%s'" % (port)
+        sql = "update authorized set ip='NULL', port='NULL', switch_name='NULL', timestamp='NULL' where port='%s' and ip='%s'" % (port, ip)
         cursor.execute(sql)
-        connection.commit()
-        cursor.close()
 
-        cursor = connection.cursor()
-	sql = "delete from failures where port='%s'" % (port)
+	sql = "delete from failures where port='%s' and ip='%s'" % (port, ip)
         cursor.execute(sql)
         cursor.close()
         connection.commit()
