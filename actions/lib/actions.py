@@ -53,11 +53,11 @@ class SessionAction(Action):
         key = client.keys.get_by_name('campus_ztp.enable_password')
         if key:
             self._enable_password = symmetric_decrypt(crypto_key, key.value)
-
+	"""
         key = client.keys.get_by_name('campus_ztp.ruckus_controller_ip')
         if key:
             self._ruckus_controller_ip = symmetric_decrypt(crypto_key, key.value)
-
+	"""
         key = client.keys.get_by_name('campus_ztp.ruckus_controller_username')
         if key:
             self._ruckus_controller_username = key.value
