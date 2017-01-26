@@ -38,7 +38,7 @@ class GetInventoryAction(actions.SessionAction):
                         if(str(cell.value)==mac_plus_three_column_name):
                                 mac_index = index
                 break
-
+        print(ap_name_index, mac_index, base_mac_index)
         for row in ws.iter_rows(row_offset=1):
                 device, mac, base_mac = "NULL", "NULL", "NULL"
                 for index, cell in enumerate(row):
@@ -63,9 +63,8 @@ class GetInventoryAction(actions.SessionAction):
                                 regex = re.compile('([0-9a-fA-F]{12})')
                                 match = regex.match(value)
                                 if(match):
-                                     mac = match.group(1).split(":")
-                                     if(len(mac)==6):
-                                          mac = mac[0:4]+"."+mac[4:8]+"."+mac[8:12]
+                                     mac = match.group(1)
+                                     mac = mac[0:4]+"."+mac[4:8]+"."+mac[8:12]
 
                         #Validates the Base MAC if it is in correct format 1C:B9:C4:3C:3B:50
                         if index == base_mac_index and cell.value!=None:
