@@ -129,6 +129,7 @@ class LoggingWatchSensor(Sensor):
 
 
     def execute_auth_failure_trigger(self, payload):
+        self._logger.info("Auth Failure Match Found " + str(payload))
         # setups a db connection
         connection = pymysql.connect(
                 host=self._db_addr,
