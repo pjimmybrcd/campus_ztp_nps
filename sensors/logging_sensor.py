@@ -89,7 +89,7 @@ class LoggingWatchSensor(Sensor):
         if match:
                 payload = {
                         'timestamp' : match.group(1),
-                        'switch_name' : match.group(2),
+                        'switch_name' : match.group(2).strip(),
                         'ip': match.group(3),
                         'ap_name': 'NULL',
                         'mac': match.group(5), 
@@ -104,7 +104,7 @@ class LoggingWatchSensor(Sensor):
         if match:
                 payload = {
                         'timestamp' : match.group(1),
-                        'switch_name' : match.group(2),
+                        'switch_name' : match.group(2).strip(),
                         'ip': match.group(3),
                         'ap_name': 'NULL',
                         'mac': match.group(5), 
@@ -119,7 +119,7 @@ class LoggingWatchSensor(Sensor):
         if match:
                 payload = {
                         'timestamp' : match.group(1),
-                        'switch_name' : match.group(2),
+                        'switch_name' : match.group(2).strip(),
                         'ip': match.group(3),
                         'ap_name': '',
                         'port': match.group(5)

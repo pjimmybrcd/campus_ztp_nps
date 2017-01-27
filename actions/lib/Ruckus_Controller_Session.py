@@ -193,11 +193,7 @@ class Ruckus_Controller_Session(object):
             output.append(self.session.before)
             self.sendline('yes')
 
-        while self.session.expect(['\r\n', prompt]) == 0:
-            # skip first line, as it's just a repeat of the command
-            if i > 0:
-                output.append(self.session.before)
-            i = i + 1
+        c = self.session.expect(['\r\n', '%s#' % prompt, pexpect.EOF, pexpect.TIMEOUT])
         output.append(self.session.before)
         return output
 

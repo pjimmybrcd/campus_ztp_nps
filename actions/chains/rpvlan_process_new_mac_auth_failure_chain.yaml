@@ -7,15 +7,7 @@
         device: "{{ip}}"
         template: "icx_vlan_update"
         variables: "{\"commit\":\"true\",\"port\":\"{{port}}\",\"ap_name\":\"{{ap_name}}\"}"
-      on-success: "ruckus_controller_send_cli_template"
-    -
-      name: "ruckus_controller_send_cli_template"
-      ref: "campus_ztp.ruckus_controller_send_cli_template"
-      parameters:
-        template: "ruckus_controller_update"
-        variables: "{\"commit\":\"true\",\"base_mac\":\"{{base_mac}}\",\"ap_name\":\"{{ap_name}}\"}"
       on-success: "rpvlan_update_mac_auth_failure_database"
-      on-failure: "rpvlan_update_mac_auth_failure_database"
     -
       name: "rpvlan_update_mac_auth_failure_database"
       ref: "campus_ztp.rpvlan_update_mac_auth_failure_database"
@@ -26,3 +18,17 @@
         ap_name: "{{ap_name}}"
         mac: "{{mac}}"
         port: "{{port}}"
+      on-success: "pause_chain"
+    -
+      name: "pause_chain"
+      ref: "core.pause"
+      parameters:
+        max_pause: 600
+      on-success: "ruckus_controller_send_cli_template"
+      on-failure: "ruckus_controller_send_cli_template"
+    -
+      name: "ruckus_controller_send_cli_template"
+      ref: "campus_ztp.ruckus_controller_send_cli_template"
+      parameters:
+        template: "ruckus_controller_update"
+        variables: "{\"commit\":\"true\",\"base_mac\":\"{{base_mac}}\",\"ap_name\":\"{{ap_name}}\",\"switch_name\":\"{{switch_name}}\",\"port\":\"{{port}}\"}"
