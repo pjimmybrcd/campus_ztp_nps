@@ -83,7 +83,7 @@ class LoggingWatchSensor(Sensor):
 
     def _handle_line(self, file_path, line):
         # Jan 1 07:26:35 ZTP_Campus_ICX7750 127.0.0.1 MACAUTH: Port 1/1/48 Mac 406c.8f38.4fb7 - authentication failed since RADIUS server rejected
-        self._logger.info("Syslog Message: " + line)
+        #self._logger.info("Syslog Message: " + line)
         regex = re.compile('(^\w+\s+\d+\s\d+:\d+:\d+ )([\w_-]+ )(\d+\.\d+\.\d+\.\d+)( MACAUTH: Port )(\d+\/\d+\/\d+)( Mac )([0-9a-fA-F]{4}\.[0-9a-fA-F]{4}\.[0-9a-fA-F]{4})( - authentication failed.*)')
         match = regex.match(line)
         if match:
