@@ -1,7 +1,7 @@
 {#### This are the commands to execute the configuration #####}
 {% if commit=='true' %}
 ap {{base_mac}}
-name {{ap_name}} {{switch_name}} {{port}}
+name {{ap_name}}_{{switch_name}}_{{port}}
 end
 {% endif %}
 {#### This are the commands to execute to reverse the configuration above ####}
