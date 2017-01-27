@@ -5,10 +5,13 @@ temp_dir: "/opt/stackstorm/packs/campus_ztp/tmp"
 config_backup_dir: "/opt/stackstorm/packs/campus_ztp/config_archives"
 
 # Used for the SCP of ZTP configuration to device
-ztp_username: "admin"
-ztp_password: "brocade"
+ztp_username: ""
+ztp_password: ""
 
-tftp_server: "10.0.0.38"
+tftp_server: ""
+
+#Used for ssh to ruckus controller
+ruckus_controller_ip: "172.20.40.126"
 
 logging_watch_sensor:
   logging_paths: "/var/log/syslog"

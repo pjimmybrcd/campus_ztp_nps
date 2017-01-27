@@ -112,7 +112,7 @@ class Ruckus_Controller_Session(object):
             prompt = "\(config\)#"
             sys.stdout.write("Entering Configuration mode on %s\r\n" % self.hostname)
             self.sendline('config')
-            i = self.session.expect([prompt, pexpect.TIMEOUT], timeout=5)
+            i = self.session.expect([prompt, pexpect.TIMEOUT], timeout=10)
             if i == 0:
                 self.session_state = Ruckus_Controller_Session.CONFIGURATION_MODE
                 return True

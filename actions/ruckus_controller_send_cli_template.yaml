@@ -5,10 +5,6 @@ description: "send cli template to the device(s)"
 enabled: true
 entry_point: "ruckus_controller_send_cli_template.py"
 parameters:
-  device:
-    type: "string"
-    description: "ip or hostname of the switch(s) seperated by a comma"
-    required: true
   template:
     type: "string"
     description: "JINJA2 template to use"

@@ -20,8 +20,9 @@ class SendCLITemplateAction(actions.SessionAction):
     def __init__(self, config):
         super(SendCLITemplateAction, self).__init__(config)
         self._template_dir = self.config['template_dir']
+        self._ruckus_controller_ip = self.config['ruckus_controller_ip']
 
-    def run(self, via, device, template, template_dir='', variables='{}',
+    def run(self, via, template, template_dir='', variables='{}',
             conf_mode=False, username='', password='', enable_username='', enable_password=''):
         ztp_utils.replace_default_userpass(self, username, password,
                                            enable_username, enable_password)
@@ -41,23 +42,24 @@ class SendCLITemplateAction(actions.SessionAction):
         if not success:
             return (False, 'Failed')
 
-        devices = device.split(',')
         device_output = []
         has_failures = False
-        for d in devices:
-            session = ztp_utils.ruckus_controller_start_session(d, self._ruckus_controller_username,
+        
+        if(self._ruckus_controller_ip != None):
+            session = ztp_utils.ruckus_controller_start_session(self._ruckus_controller_ip,
+                                                self._ruckus_controller_username,
 						self._ruckus_controller_password,
 						self._ruckus_controller_enable_username,
 						self._ruckus_controller_enable_password, via)
             (success, output) = ztp_utils.send_commands_to_session(session, command, conf_mode)
             #(success, output) = ztp_utils.send_commands_to_session(session, command)
             if success:
-                device_output.append({"device": d, "command":command, "output": output})
+                device_output.append({"device": self._ruckus_controller_ip, "command":command, "output": output})
             else:
-                device_output.append({"device": d, "command":command, "output": "Failed"})
+                device_output.append({"device": self._ruckus_controller_ip, "command":command, "output": "Failed"})
                 has_failures = True
 
-        if len(devices) == 1 and has_failures:
+        if len(self._ruckus_controller_ip) != None and has_failures:
             return (False, "Failed")
 
         return (True, device_output)

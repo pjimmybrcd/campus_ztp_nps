@@ -12,7 +12,6 @@
       name: "ruckus_controller_send_cli_template"
       ref: "campus_ztp.ruckus_controller_send_cli_template"
       parameters:
-        device: "171.20.40.127"
         template: "ruckus_controller_update"
         variables: "{\"commit\":\"true\",\"base_mac\":\"{{base_mac}}\",\"ap_name\":\"{{ap_name}}\"}"
       on-success: "rpvlan_update_mac_auth_failure_database"
