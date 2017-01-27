@@ -9,7 +9,7 @@ from st2common.util.crypto import symmetric_encrypt, symmetric_decrypt
 from logshipper.tail import Tail
 from st2reactor.sensor.base import Sensor
 import logging
-
+from logging.handlers import RotatingFileHandler
 
 class LoggingWatchSensor(Sensor):
     def __init__(self, sensor_service, config=None):
@@ -22,7 +22,7 @@ class LoggingWatchSensor(Sensor):
         self._tail = None
         self._logger = logging.getLogger('syslog_logger')
 	self._logger.setLevel(logging.DEBUG)
-        self._fileHandler = logging.FileHandler("/var/log/sensorlog")
+        self._fileHandler = RotatingFileHandler("/var/log/sensorlog", mode='a', maxBytes=100*1024*1024, backupCount=2, encoding=None, delay=0)
         self._fileHandler.setLevel(logging.DEBUG)
         self._logger.addHandler(self._fileHandler)
 
