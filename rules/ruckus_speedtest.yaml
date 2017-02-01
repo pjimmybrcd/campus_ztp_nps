@@ -1,0 +1,15 @@
+---
+name: "rpvlan_port_down"
+pack: "campus_ztp"
+enabled: true
+description: "Runs a speedtest for on the Ruckus AP's"
+trigger:
+  type: "core.st2.CronTimer"
+  parameters:
+    timezone: "UTC"
+    day_of_week: 6
+    hour: 0
+    minute: 0
+    second: 0
+action:
+  ref: "campus_ztp.ruckus_process_speedtest_chain"

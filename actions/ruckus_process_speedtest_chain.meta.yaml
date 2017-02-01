@@ -1,0 +1,9 @@
+---
+name: "ruckus_process_speedtest_chain"
+description: "Campus ZTP Private VLAN new failed mac-auth Workflow"
+
+runner_type: "action-chain"
+
+entry_point: "chains/ruckus_process_speedtest_chain.yaml"
+
+enabled: true

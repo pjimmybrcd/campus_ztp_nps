@@ -52,7 +52,6 @@ class SendCLITemplateAction(actions.SessionAction):
 						self._ruckus_controller_enable_username,
 						self._ruckus_controller_enable_password, via)
             (success, output) = ztp_utils.send_commands_to_session(session, command, conf_mode)
-            #(success, output) = ztp_utils.send_commands_to_session(session, command)
             if success:
                 device_output.append({"device": self._ruckus_controller_ip, "command":command, "output": output})
             else:

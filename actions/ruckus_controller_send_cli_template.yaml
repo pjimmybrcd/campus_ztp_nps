@@ -21,7 +21,7 @@ parameters:
     type: "boolean"
     description: "enter in configuration mode"
     required: true
-    default: true
+    default: false
   username:
     type: "string"
     description: "override configured username"

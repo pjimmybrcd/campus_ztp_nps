@@ -1,0 +1,9 @@
+---
+  chain:
+    -
+      name: "ruckus_controller_send_cli_template"
+      ref: "campus_ztp.ruckus_controller_send_cli_template"
+      parameters:
+        template: "ruckus_speedtest"
+        conf_mode: False
+        variables: "{}"

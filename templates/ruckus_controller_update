@@ -1,5 +1,6 @@
 {% if commit=='true' %}
 ap {{base_mac}}
-name {{ap_name}}_{{switch_name}}_{{port}}
+name "{{ap_name}} {{switch_name}}"
+description "{{ap_name}} {{switch_name}} {{switch_ip}} {{port}}"
 end
 {% endif %}

@@ -31,4 +31,5 @@
       ref: "campus_ztp.ruckus_controller_send_cli_template"
       parameters:
         template: "ruckus_controller_update"
-        variables: "{\"commit\":\"true\",\"base_mac\":\"{{base_mac}}\",\"ap_name\":\"{{ap_name}}\",\"switch_name\":\"{{switch_name}}\",\"port\":\"{{port}}\"}"
+        conf_mode: True
+        variables: "{\"commit\":\"true\",\"base_mac\":\"{{base_mac}}\",\"ap_name\":\"{{ap_name}}\",\"switch_name\":\"{{switch_name}}\", \"switch_ip\":\"{{ip}}\", \"port\":\"{{port}}\"}"
