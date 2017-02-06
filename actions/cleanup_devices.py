@@ -31,14 +31,19 @@ class GetInventoryAction(actions.SessionAction):
         self._icx_output_regex = re.compile('([0-9a-fA-F]{4}\.[0-9a-fA-F]{4}\.[0-9a-fA-F]{4})(\s*)(\s\d+\/\d+\/\d+)(\s*)(Dynamic)(\s*)(233)')
 
     def run(self, filepath, sheetname, ip_column_name, switch_name_column_name):
-        status = self.clean(filepath, sheetname, ip_column_name, switch_name_column_name)
+        results = self.clean(filepath, sheetname, ip_column_name, switch_name_column_name)
         self._cursor.close()
         self._connection.commit()
         self._connection.close()
-        return status
+        for obj in results:
+                print obj
+        return True
 
     def clean(self, filepath, sheetname, ip_column_name, switch_name_column_name):
         self._logger.info("***** Cleanup Action Initiated *****")
+        
+        results = []
+
         wb = openpyxl.load_workbook(filepath, data_only=True)
         ws = wb.get_sheet_by_name(sheetname)
 
@@ -66,7 +71,8 @@ class GetInventoryAction(actions.SessionAction):
                        self._logger.info("Error Invalid IP Address in file or invalid name, IP: '%s' and Name:'%s'" % (ip, name))
                        continue
 
-               self.start_icx_session(ip, name)
+               results.extend(self.start_icx_session(ip, name))
+        return results
 
     def start_icx_session(self, ip, name):
         command = "show mac-address | inc 233"
@@ -76,21 +82,23 @@ class GetInventoryAction(actions.SessionAction):
         (success, output) = ztp_utils.send_commands_to_session(icx_session, command, False)
         if(success == False):
                 self._logger.info("Error in send Command: '%s' for Device: '%s', Results: '%s', '%s'." % (command, ip, success, output))
-                return
-        self.parse_output(icx_session, ip, name, output)
+                return (False, ip, "Failure, Error in send command")
+        return self.parse_output(icx_session, ip, name, output)
 
 
     def parse_output(self, icx_session, switch_ip, switch_name, output):
         self._logger.info("Parsing output for ICX switch name: '%s', switch IP: '%s'" % (switch_name, switch_ip))
         self._logger.info("Output: '%s'" % (output))
         lines = output.splitlines()
+        results = []
         for line in lines:
                match = self._icx_output_regex.match(line.strip())
                if match:
                        self._logger.info("Regex successful match for output line: '%s'" % (line))
-                       self.verify_and_update(icx_session, switch_ip, switch_name, match.group(1).strip(), match.group(3).strip())
+                       results.append(self.verify_and_update(icx_session, switch_ip, switch_name, match.group(1).strip(), match.group(3).strip()))
                else:
                        self._logger.info("Regex failed match for output line: '%s'" % (line))
+        return results
         
     def verify_and_update(self, icx_session, switch_ip, switch_name, mac, port):
         self._logger.info("Verifying and updating db for ICX Switch IP: '%s', AP MAC address: '%s', ICX port: '%s'" % (switch_ip, mac, port))
@@ -100,7 +108,7 @@ class GetInventoryAction(actions.SessionAction):
         if count==0:
                #Mac address is not in the database so don't do anything.
                self._logger.info("Warning AP MAC address not in database for AP MAC: '%s', on ICX port: '%s', on ICX IP:'%s'" % (mac, port, switch_ip))
-               return
+               return (True, switch_ip, "Warning AP MAC address not in database for AP MAC: '%s', on ICX port: '%s', on ICX IP:'%s'" % (mac, port, switch_ip))
         else:
                #Mac Address was found
                self._logger.info("Mac address found in database for AP MAC: '%s'" % (mac))
@@ -122,25 +130,31 @@ class GetInventoryAction(actions.SessionAction):
                self._logger.info("Warning Switch Information: Switch IP: '%s', Switch IP: '%s', Switch Port: '%s' for device with MAC: '%s'" % (switch_ip, switch_name, port, mac))
         else:
                self._logger.info("Database information for AP MAC: '%s' is up-to-date." % (mac))
-               return
+
+        #Updates the port name on the ICX
+        (success, description) = self.icx_port_name_update(icx_session, port, db_ap_name)
+        if(succcess==False):
+               return (False, switch_ip, description, "AP MAC: '%s', on ICX port: '%s', on ICX IP:'%s'" % (mac, port, switch_ip))
 
         #Updates the DB
-        sql = "update authorized set ip='%s', port='%s' where mac='%s'" % (address, port, mac)
+        sql = "update authorized set ip='%s', switch_name='%s', port='%s' where mac='%s'" % (switch_ip, switch_name, port, mac)
         self._cursor.execute(sql)
         self._connection.commit()
         self._logger.info("Database updated for AP MAC:'%s'." % (mac))
 
-        #Updates the port name on the ICX
-        self.icx_port_name_update(icx_session, port, db_ap_name)
-
         #Updates the name on the ruckus controller
-        self.ruckus_controller_update(switch_ip, switch_name, db_base_mac, db_ap_name, port)
+        (success, description) = self.ruckus_controller_update(switch_ip, switch_name, db_base_mac, db_ap_name, port)
+        if(succcess==False):
+               return (False, switch_ip, description, "AP MAC: '%s', on ICX port: '%s', on ICX IP:'%s'" % (mac, port, switch_ip))
+        self._logger.info("Verify and update complete.")
+        return (True, switch_ip, "Update Successful")
 
     def icx_port_name_update(self, icx_session, port, ap_name):
         self._logger.info("Updating ICX Port Name to be: '%s' for port: '%s'" % (ap_name, port))
         icx_port_name_command = "interface ethernet '%s';port-name '%s';" % (port, ap_name)
         (success, output) = ztp_utils.send_commands_to_session(icx_session, icx_port_name_command, True)
         self._logger.info("ICX Port Naming Result: '%s', Output: '%s'" % (success, output))
+        return (success, "ICX Port Naming Result")
 
     """
     # Not needed currently.
@@ -161,4 +175,5 @@ class GetInventoryAction(actions.SessionAction):
 						self._ruckus_controller_enable_password, "ssh")
                (success, output) = ztp_utils.send_commands_to_session(ruckus_session, ruckus_command, False)
                self._logger.info("Ruckus Controller Naming Result: '%s', Output: '%s'" % (success, output))
+               return (success, "Ruckus Controller Naming Result")
                
