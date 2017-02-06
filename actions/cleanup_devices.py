@@ -28,7 +28,7 @@ class GetInventoryAction(actions.SessionAction):
         #Regex for port ex: 1/1/27
         self._port_regex = re.compile('(\d+\/\d+\/\d+)')
         #Regex for ICX Output: "2cc5.d321.b3b3 1/1/23    Dynamic   233"
-        self._icx_output_regex = re.compile('([0-9a-fA-F]{4}\.[0-9a-fA-F]{4}\.[0-9a-fA-F]{4})?(\s*)(\s\d+\/\d+\/\d+)(\s*)(Dynamic)(\s*)(233)')
+        self._icx_output_regex = re.compile('([0-9a-fA-F]{4}\.[0-9a-fA-F]{4}\.[0-9a-fA-F]{4})(\s*)(\s\d+\/\d+\/\d+)(\s*)(Dynamic)(\s*)(233)')
 
     def run(self, filepath, sheetname, ip_column_name, switch_name_column_name):
         status = self.clean(filepath, sheetname, ip_column_name, switch_name_column_name)
