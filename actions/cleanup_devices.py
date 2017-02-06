@@ -115,7 +115,7 @@ class GetInventoryAction(actions.SessionAction):
                #Mac Address was found
                self._logger.info("Mac address found in database for AP MAC: '%s'" % (mac))
 
-        sql = "select ip, port, base_mac, ap_name, switch_name from authorized where mac='%s'" % (mac)
+        sql = "select ip, port, base_mac, device, switch_name from authorized where mac='%s'" % (mac)
         self._cursor.execute(sql)
         row = self._cursor.fetchone()
         db_ip = row[0]
