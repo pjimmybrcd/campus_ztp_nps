@@ -146,14 +146,14 @@ class GetInventoryAction(actions.SessionAction):
 
         #Updates the name on the ruckus controller
         (success, description) = self.ruckus_controller_update(switch_ip, switch_name, db_base_mac, db_ap_name, port)
-        if(succcess==False):
+        if(success==False):
                return (False, switch_ip, description, "AP MAC: '%s', on ICX port: '%s', on ICX IP:'%s'" % (mac, port, switch_ip))
         self._logger.info("Verify and update complete.")
         return (True, switch_ip, "Update Successful")
 
     def icx_port_name_update(self, icx_session, port, ap_name):
         self._logger.info("Updating ICX Port Name to be: '%s' for port: '%s'" % (ap_name, port))
-        icx_port_name_command = "interface ethernet '%s';port-name '%s';" % (port, ap_name)
+        icx_port_name_command = "interface ethernet %s;port-name %s;" % (port, ap_name)
         (success, output) = ztp_utils.send_commands_to_session(icx_session, icx_port_name_command, True)
         self._logger.info("ICX Port Naming Result: '%s', Output: '%s'" % (success, output))
         return (success, "ICX Port Naming Result")
@@ -168,7 +168,7 @@ class GetInventoryAction(actions.SessionAction):
     """
 
     def ruckus_controller_update(self, switch_ip, switch_name, base_mac, ap_name, port):
-        ruckus_command = "ap '%s';name \"'%s' '%s'\";description \"'%s' '%s' '%s' '%s\";end" % (base_mac, ap_name, switch_name, ap_name, switch_name, switch_ip, port)
+        ruckus_command = "ap %s;name \"%s %s\";description \"%s %s %s %s\";end" % (base_mac, ap_name, switch_name, ap_name, switch_name, switch_ip, port)
         if(self._ruckus_controller_ip != None):
                ruckus_session = ztp_utils.ruckus_controller_start_session(self._ruckus_controller_ip,
                                                 self._ruckus_controller_username,
