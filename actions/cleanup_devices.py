@@ -89,16 +89,18 @@ class GetInventoryAction(actions.SessionAction):
     def parse_output(self, icx_session, switch_ip, switch_name, output):
         self._logger.info("Parsing output for ICX switch name: '%s', switch IP: '%s'" % (switch_name, switch_ip))
         self._logger.info("Output: '%s'" % (output))
-        lines = output.splitlines()
         results = []
-        for line in lines:
-               match = self._icx_output_regex.match(line.strip())
-               if match:
-                       self._logger.info("Regex successful match for output line: '%s'" % (line))
-                       results.append(self.verify_and_update(icx_session, switch_ip, switch_name, match.group(1).strip(), match.group(3).strip()))
-               else:
-                       self._logger.info("Regex failed match for output line: '%s'" % (line))
-        return results
+        if len(output)==0:
+                results.append(True, switch_ip, "No output");
+                return results
+        for line in output[0]["output"]:
+                match = self._icx_output_regex.match(line.strip())
+                if match:
+                        self._logger.info("Regex successful match for output line: '%s'" % (line))
+                        results.append(self.verify_and_update(icx_session, switch_ip, switch_name, match.group(1).strip(), match.group(3).strip()))
+                else:
+                        self._logger.info("Regex failed match for output line: '%s'" % (line))
+        return presults
         
     def verify_and_update(self, icx_session, switch_ip, switch_name, mac, port):
         self._logger.info("Verifying and updating db for ICX Switch IP: '%s', AP MAC address: '%s', ICX port: '%s'" % (switch_ip, mac, port))
