@@ -116,17 +116,19 @@ class GetInventoryAction(actions.SessionAction):
         
         if(self._ip_addr_regex.match(db_ip)==None or self._port_regex.match(db_port)==None or db_switch_name=="NULL"):
                self._logger.info("Warning Database was missing information for AP MAC:'%s'." % (mac))
-               sql = "update authorized set ip='%s', port='%s' where mac='%s'" % (address, port, mac)
-               self._cursor.execute(sql)
-               self._logger.info("Database updated for AP MAC:'%s'." % (mac))
         elif(db_ip!=switch_ip or db_port!=port or db_switch_name!=switch_name):
                self._logger.info("Warning Database had invalid information for AP MAC:'%s'." % (mac))
                self._logger.info("Warning Database Information: Switch IP: '%s', Switch Name: '%s', Switch Port: '%s' for device with MAC: '%s'" % (db_ip, db_switch_name, db_port, mac))
                self._logger.info("Warning Switch Information: Switch IP: '%s', Switch IP: '%s', Switch Port: '%s' for device with MAC: '%s'" % (switch_ip, switch_name, port, mac))
         else:
                self._logger.info("Database information for AP MAC: '%s' is up-to-date." % (mac))
+               return
 
+        #Updates the DB
+        sql = "update authorized set ip='%s', port='%s' where mac='%s'" % (address, port, mac)
+        self._cursor.execute(sql)
         self._connection.commit()
+        self._logger.info("Database updated for AP MAC:'%s'." % (mac))
 
         #Updates the port name on the ICX
         self.icx_port_name_update(icx_session, port, db_ap_name)
