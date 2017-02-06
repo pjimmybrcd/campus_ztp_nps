@@ -1,0 +1,23 @@
+---
+name: "cleanup_devices"
+runner_type: "run-python"
+description: "Updates the database given an excel sheet"
+enabled: true
+entry_point: "cleanup_devices.py"
+parameters:
+  filepath:
+    type: "string"
+    description: "filepath of excel (ie: /home/brocade/Desktop/sample.xlsx)"
+    required: true
+  sheetname:
+    type: "string"
+    description: "name of sheet (ie: IDFs)"
+    required: true
+  ip_column_name:
+    type: "string"
+    description: "IP address column name (ie: IP)"
+    required: true
+  switch_name_column_name:
+    type: "string"
+    description: "Switch name column name (ie: IDF)"
+    required: true
