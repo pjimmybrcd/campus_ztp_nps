@@ -100,7 +100,7 @@ class GetInventoryAction(actions.SessionAction):
                         results.append(self.verify_and_update(icx_session, switch_ip, switch_name, match.group(1).strip(), match.group(3).strip()))
                 else:
                         self._logger.info("Regex failed match for output line: '%s'" % (line))
-        return presults
+        return results
         
     def verify_and_update(self, icx_session, switch_ip, switch_name, mac, port):
         self._logger.info("Verifying and updating db for ICX Switch IP: '%s', AP MAC address: '%s', ICX port: '%s'" % (switch_ip, mac, port))
