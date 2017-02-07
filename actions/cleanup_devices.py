@@ -37,7 +37,7 @@ class GetInventoryAction(actions.SessionAction):
         self._connection.close()
         for obj in results:
                 print obj
-        return True
+        return (True, "Finished")
 
     def clean(self, filepath, sheetname, ip_column_name, switch_name_column_name):
         self._logger.info("***** Cleanup Action Initiated *****")
@@ -135,7 +135,7 @@ class GetInventoryAction(actions.SessionAction):
 
         #Updates the port name on the ICX
         (success, description) = self.icx_port_name_update(icx_session, port, db_ap_name)
-        if(succcess==False):
+        if(success==False):
                return (False, switch_ip, description, "AP MAC: '%s', on ICX port: '%s', on ICX IP:'%s'" % (mac, port, switch_ip))
 
         #Updates the DB
