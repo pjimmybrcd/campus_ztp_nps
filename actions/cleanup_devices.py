@@ -170,7 +170,7 @@ class GetInventoryAction(actions.SessionAction):
     def ruckus_controller_update(self, switch_ip, switch_name, base_mac, ap_name, port):
         ruckus_command = "ap %s;name \"%s %s\";description \"%s %s %s %s\";end" % (base_mac, ap_name, switch_name, ap_name, switch_name, switch_ip, port)
         if(self._ruckus_controller_ip != None):
-               ruckus_session = ztp_utils.ruckus_controller_start_session(self._ruckus_controller_ip,
+               ruckus_session = ztp_utils.ruckus_controller_start_session("172.20.40.126",
                                                 self._ruckus_controller_username,
 						self._ruckus_controller_password,
 						self._ruckus_controller_enable_username,
