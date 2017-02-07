@@ -174,7 +174,7 @@ class GetInventoryAction(actions.SessionAction):
 						self._ruckus_controller_password,
 						self._ruckus_controller_enable_username,
 						self._ruckus_controller_enable_password, "ssh")
-        success, output) = ztp_utils.send_commands_to_session(ruckus_session, ruckus_command, False)
+        (success, output) = ztp_utils.send_commands_to_session(ruckus_session, ruckus_command, False)
         self._logger.info("Ruckus Controller Naming Result: '%s', Output: '%s'" % (success, output))
         return (success, "Ruckus Controller Naming Result")
                
