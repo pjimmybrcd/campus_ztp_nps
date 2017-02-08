@@ -66,7 +66,7 @@ class GetInventoryAction(actions.SessionAction):
                 break
 
         print("IP Address Column Index: " + str(ip_index), "Switch Name Column Index: " + str(name_index))
-        self._logger.info("IP Address Column Index: " + str(ip_index), "Switch Name Column Index: " + str(name_index))
+        #self._logger.info("IP Address Column Index: " + str(ip_index), "Switch Name Column Index: " + str(name_index))
         
 
         for row in ws.iter_rows(row_offset=1):
@@ -113,6 +113,7 @@ class GetInventoryAction(actions.SessionAction):
         if(success == False):
                 self._logger.info("Error in send Command: '%s' for Device: '%s', Results: '%s', '%s'." % (ending_command, ip, success, output))
                 return (False, ip, "Failure, Error in send command")
+        icx_session.logout();
         return result
 
 
