@@ -126,7 +126,7 @@ class GetInventoryAction(actions.SessionAction):
                 results.append(True, switch_ip, "No output");
                 return results
 
-        for line in output[0]["output"].splitlines():
+        for line in output[0]["output"][0].splitlines():
                 match = self._icx_output_regex.match(line.strip())
                 if match:
                         self._logger.info("Regex successful match for output line: '%s'" % (line))
