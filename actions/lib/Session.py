@@ -148,7 +148,7 @@ class Session(object):
 
         # Record any output from the command
         output = []
-        c = self.session.expect([prompt, pexpect.EOF, pexpect.TIMEOUT]):
+        c = self.session.expect([prompt, pexpect.EOF, pexpect.TIMEOUT])
         # skip first line, as it's just a repeat of the command
         output.append(self.session.before)
 
