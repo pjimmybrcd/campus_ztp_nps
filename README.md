@@ -80,6 +80,19 @@ Configure rsyslog to store logs in: "/var/log/syslog" and the permissions need t
 		touch /var/log/sensorlog
 		chmod 666 /var/log/sensorlog
 
+## Create a cleanup action log file and configure permissions
+The cleanup action takes in a spreadsheet containing ICX ip addresses and witch named. It sequentially uses ssh to connect to all the switches and enters commands to update the port naming on the ICX, ap naming on the Ruckus Controller, and the campus_ztp database. If the ICX has an authorized AP connected but the naming or db information is incorrect, this script will update the information. If there is an unauthorized device, no action will be taken but will be logged.
+		touch /var/log/campus_ztp_cleanuplog
+		chmod 666 /var/log/sensorlog
+
+## Create a ICX log file and configure permissions
+		touch /var/log/campus_ztp_icx_sshlog
+		chmod 666 /var/log/campus_ztp_icx_sshlog
+
+## Create a Ruckus Controller log file and configure permissions
+		touch /var/log/campus_ztp_ruckus_sshlog
+		chmod 666 /var/log/campus_ztp_ruckus_sshlog
+
 ## Setup BWC Datastore
 Ensure that you've set up BWC for encrypted datastore. See https://docs.stackstorm.com/datastore.html
 
@@ -163,6 +176,15 @@ Open the internet browser and navigate to: http://bwc_ip_address
 ## Tailing the Sensor messages
 		tail –f /var/log/sensorlog
 
+## Tailing the cleanup action log
+		tail –f /var/log/campus_ztp_cleanuplog
+
+## Tailing the ICX SSH log
+		tail –f /var/log/campus_ztp_icx_sshlog
+
+## Tailing the Ruckus Controller SSH log
+		tail –f /var/log/campus_ztp_ruckus_sshlog
+
 ## Tailing the Sensor Container messages
 		tail –f /var/log/st2/st2sensorcontainer.log
 
@@ -178,7 +200,7 @@ Open the internet browser and navigate to: http://bwc_ip_address
 		select * from failures;
 		exit
 
-## Test sending a Template to ICX Switch
+## Test sending a Template to ICX Switch from a Terminal
 		st2 run campus_ztp.send_cli_template template='icx_vlan_update' device='<ICX_IP_Address>' variables='{"commit":"true","port":"1/1/1","ap_name":"Ruckus_AP_BLD1"}'
 
 

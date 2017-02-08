@@ -30,7 +30,7 @@ class GetInventoryAction(actions.SessionAction):
         #Regex for port ex: 1/1/27
         self._port_regex = re.compile('(\d+\/\d+\/\d+)')
         #Regex for ICX Output: "2cc5.d321.b3b3 1/1/23    Dynamic   233"
-        self._icx_output_regex = re.compile('([0-9a-fA-F]{4}\.[0-9a-fA-F]{4}\.[0-9a-fA-F]{4})(\s*)(\s\d+\/\d+\/\d+)(\s*)(Dynamic)(\s*)(233)')
+        self._icx_output_regex = re.compile('([0-9a-fA-F]{4}\.[0-9a-fA-F]{4}\.[0-9a-fA-F]{4})(\s*)(\s\d+\/1\/\d+)(\s*)(Dynamic)(\s*)(233)')
 
     def run(self, filepath, sheetname, ip_column_name, switch_name_column_name):
         self._logger.info("***** Cleanup Action Initiated *****")
@@ -46,6 +46,9 @@ class GetInventoryAction(actions.SessionAction):
         self._connection.close()
         for obj in results:
                 print obj
+                self._logger.info(obj)
+
+        self._logger.info("Done")
         return (True, "Finished")
 
     def clean(self, filepath, sheetname, ip_column_name, switch_name_column_name):
@@ -157,7 +160,7 @@ class GetInventoryAction(actions.SessionAction):
         db_ap_name = row[3]
         db_switch_name = row[4]
         
-        if(db_ip==None or db_port==None or db_ip==None or db_base_mac==None or db_ap_name==None or self._ip_addr_regex.match(db_ip)==None or self._port_regex.match(db_port)==None or db_switch_name=="NULL"):
+        if(db_ip==None or db_port==None or db_ip==None or db_base_mac==None or db_ap_name==None or db_switch_name=="NULL" or self._ip_addr_regex.match(db_ip)==None or self._port_regex.match(db_port)==None):
                self._logger.info("Warning Database was missing information for AP MAC:'%s'." % (mac))
         elif(db_ip!=switch_ip or db_port!=port or db_switch_name!=switch_name):
                self._logger.info("Warning Database had invalid information for AP MAC:'%s'." % (mac))
