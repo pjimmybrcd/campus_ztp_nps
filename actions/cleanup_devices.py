@@ -201,7 +201,7 @@ class GetInventoryAction(actions.SessionAction):
     """
 
     def ruckus_controller_update(self, switch_ip, switch_name, base_mac, ap_name, port):
-        ruckus_command = "ap %s;name \"%s %s\";description \"%s %s %s %s\"" % (base_mac, ap_name, switch_name, ap_name, switch_name, switch_ip, port)
+        ruckus_command = "ap %s;name \"%s %s\";description \"%s %s %s %s\";end" % (base_mac, ap_name, switch_name, ap_name, switch_name, switch_ip, port)
         (success, output) = ztp_utils.send_commands_to_session(self._ruckus_session, ruckus_command, True)
         self._logger.info("Ruckus Controller Naming Result: '%s', Output: '%s'" % (success, output))
         return (success, "Ruckus Controller Naming Result")
