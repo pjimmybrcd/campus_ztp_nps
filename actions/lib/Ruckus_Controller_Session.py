@@ -188,7 +188,7 @@ class Ruckus_Controller_Session(object):
 
         # Record any output from the command
         output = []
-        c = self.session.expect(['.*\[yes/no\]', '%s#' % prompt, pexpect.EOF, pexpect.TIMEOUT], timeout=3)
+        c = self.session.expect(['.*\[yes/no\]', '%s#' % prompt, pexpect.EOF, pexpect.TIMEOUT], timeout=10)
         if c==0:
             output.append(self.ansi_escape.sub('', self.session.before))
             self.sendline('yes')
