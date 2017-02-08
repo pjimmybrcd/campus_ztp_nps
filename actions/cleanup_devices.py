@@ -85,18 +85,35 @@ class GetInventoryAction(actions.SessionAction):
         return results
 
     def start_icx_session(self, ip, name):
+        initial_command = "skip-page-display"
+        ending_command = "page-display"
         command = "show mac-address | inc 233"
 
         self._logger.info("Starting session to ICX switch with ip: '%s' and name: '%s'" % (ip, name))
         icx_session = ztp_utils.start_session(ip, self._username, self._password,
                                               self._enable_username, self._enable_password, "ssh")
 
+        self._logger.info("Sending command: '%s'" % initial_command)
+        (success, output) = ztp_utils.send_commands_to_session(icx_session, initial_command, False)
+        if(success == False):
+                self._logger.info("Error in send Command: '%s' for Device: '%s', Results: '%s', '%s'." % (initial_command, ip, success, output))
+                return (False, ip, "Failure, Error in send command")
+
+
+
         self._logger.info("Sending command: '%s'" % command)
         (success, output) = ztp_utils.send_commands_to_session(icx_session, command, False)
         if(success == False):
                 self._logger.info("Error in send Command: '%s' for Device: '%s', Results: '%s', '%s'." % (command, ip, success, output))
                 return (False, ip, "Failure, Error in send command")
-        return self.parse_output(icx_session, ip, name, output)
+        result = self.parse_output(icx_session, ip, name, output)
+
+        self._logger.info("Sending command: '%s'" % ending_command)
+        (success, output) = ztp_utils.send_commands_to_session(icx_session, ending_command, False)
+        if(success == False):
+                self._logger.info("Error in send Command: '%s' for Device: '%s', Results: '%s', '%s'." % (ending_command, ip, success, output))
+                return (False, ip, "Failure, Error in send command")
+        return result
 
 
     def parse_output(self, icx_session, switch_ip, switch_name, output):
@@ -183,7 +200,7 @@ class GetInventoryAction(actions.SessionAction):
     """
 
     def ruckus_controller_update(self, switch_ip, switch_name, base_mac, ap_name, port):
-        ruckus_command = "ap %s;name \"%s %s\";description \"%s %s %s %s\";end" % (base_mac, ap_name, switch_name, ap_name, switch_name, switch_ip, port)
+        ruckus_command = "ap %s;name \"%s %s\";description \"%s %s %s %s\"" % (base_mac, ap_name, switch_name, ap_name, switch_name, switch_ip, port)
         (success, output) = ztp_utils.send_commands_to_session(self._ruckus_session, ruckus_command, True)
         self._logger.info("Ruckus Controller Naming Result: '%s', Output: '%s'" % (success, output))
         return (success, "Ruckus Controller Naming Result")
