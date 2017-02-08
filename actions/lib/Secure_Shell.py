@@ -22,7 +22,7 @@ class Secure_Shell(Session.Session):
         ''' Attempt to Login to Device '''
         COMMAND = "ssh %s@%s" % (self.username, self.hostname)
         self.session = pexpect.spawn(COMMAND)
-        self.session.logfile = open('/tmp/campus_ztp.sshlog', 'w')
+        self.session.logfile = open('/var/log/campus_ztp_icx_sshlog', 'w')
         i = self.session.expect(['timed out', 'assword:', 'yes/no', 'failed', pexpect.TIMEOUT],
                                 timeout=30)
         if i == 0:

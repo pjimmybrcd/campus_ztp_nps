@@ -12,7 +12,7 @@ class GetInventoryAction(actions.SessionAction):
 
         self._logger = logging.getLogger('cleanup_logger')
 	self._logger.setLevel(logging.DEBUG)
-        self._fileHandler = RotatingFileHandler("/var/log/cleanuplog_bwc", mode='w', maxBytes=10*1024*1024, backupCount=2, encoding=None, delay=0)
+        self._fileHandler = RotatingFileHandler("/var/log/campus_ztp_cleanuplog", mode='w', maxBytes=10*1024*1024, backupCount=2, encoding=None, delay=0)
         self._fileHandler.setLevel(logging.DEBUG)
         self._logger.addHandler(self._fileHandler)
 
@@ -22,6 +22,8 @@ class GetInventoryAction(actions.SessionAction):
                   passwd=self._db_pass,  
                   db=self._db_name)
         self._cursor =  self._connection.cursor()
+        self._ruckus_controller_ip = self.config['ruckus_controller_ip']
+        self._ruckus_session = None
 
         #Regex for IP Address
         self._ip_addr_regex = re.compile('(\d+\.\d+\.\d+\.\d+)')
@@ -31,6 +33,13 @@ class GetInventoryAction(actions.SessionAction):
         self._icx_output_regex = re.compile('([0-9a-fA-F]{4}\.[0-9a-fA-F]{4}\.[0-9a-fA-F]{4})(\s*)(\s\d+\/\d+\/\d+)(\s*)(Dynamic)(\s*)(233)')
 
     def run(self, filepath, sheetname, ip_column_name, switch_name_column_name):
+        self._logger.info("***** Cleanup Action Initiated *****")
+        self._logger.info("Attempting to SSH to Ruckus Controller on IP: '%s'" % self._ruckus_controller_ip)
+        self._ruckus_session = ztp_utils.ruckus_controller_start_session(self._ruckus_controller_ip,
+                                                self._ruckus_controller_username,
+						self._ruckus_controller_password,
+						self._ruckus_controller_enable_username,
+						self._ruckus_controller_enable_password, "ssh")
         results = self.clean(filepath, sheetname, ip_column_name, switch_name_column_name)
         self._cursor.close()
         self._connection.commit()
@@ -40,8 +49,7 @@ class GetInventoryAction(actions.SessionAction):
         return (True, "Finished")
 
     def clean(self, filepath, sheetname, ip_column_name, switch_name_column_name):
-        self._logger.info("***** Cleanup Action Initiated *****")
-        
+        self._logger.info("Starting to parse the spreadsheet.")
         results = []
 
         wb = openpyxl.load_workbook(filepath, data_only=True)
@@ -58,6 +66,8 @@ class GetInventoryAction(actions.SessionAction):
                 break
 
         print("IP Address Column Index: " + str(ip_index), "Switch Name Column Index: " + str(name_index))
+        self._logger.info("IP Address Column Index: " + str(ip_index), "Switch Name Column Index: " + str(name_index))
+        
 
         for row in ws.iter_rows(row_offset=1):
                ip, name = "NULL", "NULL"
@@ -76,9 +86,12 @@ class GetInventoryAction(actions.SessionAction):
 
     def start_icx_session(self, ip, name):
         command = "show mac-address | inc 233"
-        self._logger.info("Starting cleanup for ICX switch with ip: '%s' and name: '%s'" % (ip, name))
+
+        self._logger.info("Starting session to ICX switch with ip: '%s' and name: '%s'" % (ip, name))
         icx_session = ztp_utils.start_session(ip, self._username, self._password,
                                               self._enable_username, self._enable_password, "ssh")
+
+        self._logger.info("Sending command: '%s'" % command)
         (success, output) = ztp_utils.send_commands_to_session(icx_session, command, False)
         if(success == False):
                 self._logger.info("Error in send Command: '%s' for Device: '%s', Results: '%s', '%s'." % (command, ip, success, output))
@@ -89,10 +102,12 @@ class GetInventoryAction(actions.SessionAction):
     def parse_output(self, icx_session, switch_ip, switch_name, output):
         self._logger.info("Parsing output for ICX switch name: '%s', switch IP: '%s'" % (switch_name, switch_ip))
         self._logger.info("Output: '%s'" % (output))
+
         results = []
-        if len(output)==0:
+        if len(output)==0 or len(output[0]["output"])==0 :
                 results.append(True, switch_ip, "No output");
                 return results
+
         for line in output[0]["output"]:
                 match = self._icx_output_regex.match(line.strip())
                 if match:
@@ -169,12 +184,7 @@ class GetInventoryAction(actions.SessionAction):
 
     def ruckus_controller_update(self, switch_ip, switch_name, base_mac, ap_name, port):
         ruckus_command = "ap %s;name \"%s %s\";description \"%s %s %s %s\";end" % (base_mac, ap_name, switch_name, ap_name, switch_name, switch_ip, port)
-        ruckus_session = ztp_utils.ruckus_controller_start_session("172.20.40.126",
-                                                self._ruckus_controller_username,
-						self._ruckus_controller_password,
-						self._ruckus_controller_enable_username,
-						self._ruckus_controller_enable_password, "ssh")
-        (success, output) = ztp_utils.send_commands_to_session(ruckus_session, ruckus_command, True)
+        (success, output) = ztp_utils.send_commands_to_session(self._ruckus_session, ruckus_command, True)
         self._logger.info("Ruckus Controller Naming Result: '%s', Output: '%s'" % (success, output))
         return (success, "Ruckus Controller Naming Result")
                

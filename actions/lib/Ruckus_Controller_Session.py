@@ -190,12 +190,12 @@ class Ruckus_Controller_Session(object):
         output = []
         c = self.session.expect(['.*\[yes/no\]', '%s#' % prompt, pexpect.EOF, pexpect.TIMEOUT], timeout=3)
         if c==0:
-            output.append(self.session.before)
+            output.append(self.ansi_escape.sub('', self.session.before))
             self.sendline('yes')
         
-        output.append(self.session.before)
+        output.append(self.ansi_escape.sub('', self.session.before))
         c = self.session.expect(['\r\n', '%s#' % prompt, pexpect.EOF, pexpect.TIMEOUT])
-        output.append(self.session.before)
+        output.append(self.ansi_escape.sub('', self.session.before))
         return output
 
     def set_hostname(self, hostname):
