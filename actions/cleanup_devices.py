@@ -122,7 +122,7 @@ class GetInventoryAction(actions.SessionAction):
         self._logger.info("Output: '%s'" % (output))
 
         results = []
-        if len(output)==0 or len(output[0]["output"])==0 :
+        if output==None or len(output)==0 or len(output[0]["output"])==0 :
                 results.append(True, switch_ip, "No output");
                 return results
 
@@ -157,7 +157,7 @@ class GetInventoryAction(actions.SessionAction):
         db_ap_name = row[3]
         db_switch_name = row[4]
         
-        if(db_ip==None or self._ip_addr_regex.match(db_ip)==None or self._port_regex.match(db_port)==None or db_switch_name=="NULL"):
+        if(db_ip==None or db_port==None or db_ip==None or db_base_mac==None or db_ap_name==None or self._ip_addr_regex.match(db_ip)==None or self._port_regex.match(db_port)==None or db_switch_name=="NULL"):
                self._logger.info("Warning Database was missing information for AP MAC:'%s'." % (mac))
         elif(db_ip!=switch_ip or db_port!=port or db_switch_name!=switch_name):
                self._logger.info("Warning Database had invalid information for AP MAC:'%s'." % (mac))
