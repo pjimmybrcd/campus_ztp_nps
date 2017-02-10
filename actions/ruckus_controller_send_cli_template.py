@@ -57,7 +57,7 @@ class SendCLITemplateAction(actions.SessionAction):
             else:
                 device_output.append({"device": self._ruckus_controller_ip, "command":command, "output": "Failed"})
                 has_failures = True
-
+            session.logout()
         if len(self._ruckus_controller_ip) != None and has_failures:
             return (False, "Failed")
 

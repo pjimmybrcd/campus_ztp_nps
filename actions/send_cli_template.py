@@ -53,7 +53,7 @@ class SendCLITemplateAction(actions.SessionAction):
             else:
                 device_output.append({"device": d, "output": "Failed"})
                 has_failures = True
-
+            session.logout()
         if len(devices) == 1 and has_failures:
             return (False, "Failed")
 
