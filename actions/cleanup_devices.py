@@ -48,6 +48,7 @@ class GetInventoryAction(actions.SessionAction):
                 print obj
                 self._logger.info(obj)
 
+        self._ruckus_session.logout()
         self._logger.info("Done")
         return (True, "Finished")
 
@@ -102,8 +103,6 @@ class GetInventoryAction(actions.SessionAction):
                 self._logger.info("Error in send Command: '%s' for Device: '%s', Results: '%s', '%s'." % (initial_command, ip, success, output))
                 return (False, ip, "Failure, Error in send command")
 
-
-
         self._logger.info("Sending command: '%s'" % command)
         (success, output) = ztp_utils.send_commands_to_session(icx_session, command, False)
         if(success == False):
@@ -116,6 +115,7 @@ class GetInventoryAction(actions.SessionAction):
         if(success == False):
                 self._logger.info("Error in send Command: '%s' for Device: '%s', Results: '%s', '%s'." % (ending_command, ip, success, output))
                 return (False, ip, "Failure, Error in send command")
+
         icx_session.logout();
         return result
 

@@ -14,7 +14,7 @@ limitations under the License.
 import json
 import re
 import sys
-import Secure_Shell
+import Session
 import Ruckus_Controller_Session
 import Telnet
 import Excel_Reader
@@ -143,7 +143,7 @@ def start_session(device, username, password, enable_username, enable_password, 
         session = Telnet.Telnet(device, username, password,
                                 enable_username, enable_password)
     if via == 'ssh':
-        session = Secure_Shell.Secure_Shell(device, username, password,
+        session = Session.Session(device, username, password,
                                             enable_username, enable_password)
     return session
 

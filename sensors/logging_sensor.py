@@ -112,7 +112,7 @@ class LoggingWatchSensor(Sensor):
                 }
                 self.execute_auth_failure_trigger(payload)
                 return
-"""
+
         #Dec 19 17:10:17 RSOC-TEST-STACK 127.0.0.1 System: Interface ethernet 2/1/29, state down
         regex = re.compile('(^\w+\s+\d+\s\d+:\d+:\d+ )([\w_-]+ )(\d+\.\d+\.\d+\.\d+)( System: Interface ethernet )(\d+\/\d+\/\d+)(, state down)')
         match = regex.match(line)
@@ -126,7 +126,6 @@ class LoggingWatchSensor(Sensor):
                 }
                 self.execute_port_down_trigger(payload)
                 return
-"""
 
     def execute_auth_failure_trigger(self, payload):
         self._logger.info("Auth Failure Match Found " + str(payload))
@@ -181,8 +180,9 @@ class LoggingWatchSensor(Sensor):
                 ap_name = cursor.fetchone()[0]
                 payload["ap_name"] = ap_name
                 self._logger.info("The port configuration should be reverted " + str(payload))
-                trigger = 'campus_ztp.rpvlan_port_down'
+                trigger = ''
                 self.sensor_service.dispatch(trigger=trigger, payload=payload)
+                self.sensor_service.dispatch(trigger="campus_ztp.rpvlan_port_down", payload=payload)
         else:
                 self._logger.info("The port configuration does not need to be reverted " + str(payload))
 

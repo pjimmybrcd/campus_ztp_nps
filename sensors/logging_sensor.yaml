@@ -5,7 +5,7 @@
   trigger_types:
     -
       name: "rpvlan_port_down"
-      description: "Trigger which indicates a port down has been detected"
+      description: "Trigger which indicates a port down has been detected."
       payload_schema:
         type: "object"
         properties:

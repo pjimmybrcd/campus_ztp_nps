@@ -1,5 +1,5 @@
 ---
-name: "rpvlan_port_down"
+name: "rpvlan_speedtest"
 pack: "campus_ztp"
 enabled: true
 description: "Runs a speedtest for on the Ruckus AP's"

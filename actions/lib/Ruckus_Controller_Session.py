@@ -22,9 +22,14 @@ class Ruckus_Controller_Session(object):
         self.session_lf = ''
         self.session_prompt = ''
         self.ansi_escape = re.compile(r'\x1b[^m]*m')
+        self._login_status = False
+        self._enable_status = False
 
     def login(self):
         ''' Attempt to Login to Device '''
+        if(self._login_status):
+            return True
+
         COMMAND = "ssh %s@%s" % (self.username, self.hostname)
         self.session = pexpect.spawn(COMMAND)
         self.session.logfile = open('/var/log/campus_ztp_ruckus_sshlog', 'w')
@@ -32,6 +37,7 @@ class Ruckus_Controller_Session(object):
                                 timeout=30)
         if i == 0:
             sys.stderr.write("SSH Connection to '%s' timed out" % self.hostname)
+            self._login_status = False
             return False
         if i == 1:
             self.session.sendline(self.password)
@@ -41,9 +47,11 @@ class Ruckus_Controller_Session(object):
             self.session.sendline(self.password)
         if i == 3:
             sys.stderr.write("Known key failed to match device key!\r\n")
+            self._login_status = False
             return False
         if i == 4:
             sys.stderr.write("Failed to connect!\r\n")
+            self._login_status = False
             return False
 
         # Should be logged in at this point
@@ -52,6 +60,7 @@ class Ruckus_Controller_Session(object):
             # incorrect credentials
             # TODO: Terminate Login
             sys.stderr.write("Invalid login username/password for '%s'" % self.hostname)
+            self._login_status = False
             return False
         if i == 1:
             self.session_state = Ruckus_Controller_Session.SESSION_AVAILABLE
@@ -59,9 +68,11 @@ class Ruckus_Controller_Session(object):
             self.session_state = Ruckus_Controller_Session.PRIVILEDGE_MODE
         if i == 3:
             sys.stderr.write("Failed to connect!\r\n")
+            self._login_status = False
             return False
 
         self.session_prompt = "%s" % self.session.before.split()[-1]
+        self._login_status = True
         return True
 
     def sendline(self, line):
@@ -70,6 +81,9 @@ class Ruckus_Controller_Session(object):
 
     def enter_enable_mode(self):
         ''' enters enable mode '''
+        if(self._enable_status):
+            return True
+
         if self.session_state == Ruckus_Controller_Session.SESSION_AVAILABLE:
             prompt = self.ansi_escape.sub('',self.session_prompt)
             self.sendline('enable')
@@ -85,9 +99,11 @@ class Ruckus_Controller_Session(object):
             if c == 2:
                 # there is no enable password
                 self.session_state = Ruckus_Controller_Session.PRIVILEDGE_MODE
+                self._enable_status = True
                 return True
             if c == 3:
                 sys.stderr.write("Timeout trying to enter enable mode\r\n")
+                self._enable_status = False
                 return False
 
             # double check we are in enable mode
@@ -96,14 +112,18 @@ class Ruckus_Controller_Session(object):
                 # incorrect credentials
                 # TODO: Terminate Login
                 sys.stderr.write("Invalid enable username/password!\r\n")
+                self._enable_status = False
                 return False
 
             self.session_state = Ruckus_Controller_Session.PRIVILEDGE_MODE
+            self._enable_status = True
             return True
         if self.session_state == Ruckus_Controller_Session.PRIVILEDGE_MODE:
+            self._enable_status = True
             return True
         raise Exception("Trying to enter enable mode while State is not "
                         "Available or already in priviledge mode")
+        self._enable_status = False
         return False
 
     def enter_configuration_mode(self):
@@ -268,6 +288,8 @@ class Ruckus_Controller_Session(object):
         self.sendline('exit')
         self.session.close()
         self.session_state = Ruckus_Controller_Session.NO_SESSION
+        self._login_status = False
+        self._enable_status = False
         return
 
         # Or is this better?
