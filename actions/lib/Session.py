@@ -61,9 +61,9 @@ class Session(object):
             self._login_status = False
             return False
         if i == 1:
-            self.session_state = Session.Session.SESSION_AVAILABLE
+            self.session_state = Session.SESSION_AVAILABLE
         if i == 2:
-            self.session_state = Session.Session.PRIVILEDGE_MODE
+            self.session_state = Session.PRIVILEDGE_MODE
         if i == 3:
             print("Failed to connect!\r\n")
             self._login_status = False
